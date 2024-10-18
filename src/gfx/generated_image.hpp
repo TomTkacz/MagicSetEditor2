@@ -63,6 +63,7 @@ public:
   ScriptType type() const override;
   String typeName() const override;
   GeneratedImageP toImage() const override;
+  String toString() const override;
 };
 
 /// Resize an image to conform to the options

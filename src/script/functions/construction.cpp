@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------------------- : Includes
 
 #include <util/prec.hpp>
+#include <gfx/generated_image.hpp>
 #include <script/functions/functions.hpp>
 #include <script/functions/util.hpp>
 #include <data/field.hpp>
@@ -14,7 +15,9 @@
 #include <data/field/choice.hpp>
 #include <data/field/package_choice.hpp>
 #include <data/field/color.hpp>
+#include <data/field/image.hpp>
 #include <data/game.hpp>
+#include <data/set.hpp>
 #include <data/card.hpp>
 #include <util/error.hpp>
 
@@ -45,6 +48,15 @@ SCRIPT_FUNCTION(new_card) {
       pvalue->package_name = v->toString();
     } else if (ColorValue* cvalue = dynamic_cast<ColorValue*>(value)) {
       cvalue->value = v->toColor();
+    } else if (ImageValue* ivalue = dynamic_cast<ImageValue*>(value)) {
+      SCRIPT_PARAM(Set*, set);
+      // If we're dealing with an in-memory image, go ahead and store it to an internal file within the set.
+      if (v->type() == ScriptType::SCRIPT_IMAGE) {
+        LocalFileName new_image_file = set->newFileName(name, settings.internal_image_extension ? _(".png") : _(""));
+        GeneratedImage::Options options(0, 0, set, (Package*)set->stylesheet.get());
+        v->toImage()->generate(options).SaveFile(set->nameOut(new_image_file), wxBITMAP_TYPE_PNG);
+        ivalue->filename = new_image_file;
+      }
     } else {
       throw ScriptError(format_string(_("Can not set value '%s', it is not of the right type"),name));
     }

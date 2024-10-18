@@ -19,6 +19,7 @@
 
 ScriptType GeneratedImage::type() const { return SCRIPT_IMAGE; }
 String GeneratedImage::typeName() const { return _TYPE_("image"); }
+String GeneratedImage::toString() const { return "<image>"; }
 GeneratedImageP GeneratedImage::toImage() const {
   return const_cast<GeneratedImage*>(this)->intrusive_from_this();
 }
