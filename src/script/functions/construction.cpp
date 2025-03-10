@@ -14,9 +14,11 @@
 #include <data/field/choice.hpp>
 #include <data/field/package_choice.hpp>
 #include <data/field/color.hpp>
+#include <data/field/image.hpp>
 #include <data/game.hpp>
 #include <data/card.hpp>
 #include <util/error.hpp>
+#include <util/io/package.hpp>
 
 // ----------------------------------------------------------------------------- : new_card
 
@@ -45,6 +47,9 @@ SCRIPT_FUNCTION(new_card) {
       pvalue->package_name = v->toString();
     } else if (ColorValue* cvalue = dynamic_cast<ColorValue*>(value)) {
       cvalue->value = v->toColor();
+    } else if (ImageValue* ivalue = dynamic_cast<ImageValue*>(value)) {
+      wxFileName fname( static_cast<ExternalImage*>(v.get())->toString() );
+      ivalue->filename = LocalFileName::fromReadString( fname.GetName(), "");
     } else {
       throw ScriptError(format_string(_("Can not set value '%s', it is not of the right type"),name));
     }

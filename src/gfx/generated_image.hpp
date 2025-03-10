@@ -399,3 +399,15 @@ private:
   Age age; ///< Age the image was last updated
 };
 
+// ----------------------------------------------------------------------------- : ExternalImage
+
+/// Load an image from the filesystem
+class ExternalImage : public GeneratedImage {
+public:
+    ExternalImage(const String& filepath) : filepath(filepath) {};
+    Image generate(const Options&) const override;
+    bool operator == (const GeneratedImage& that) const override;
+    inline String toString() { return filepath; }
+private:
+    String filepath;
+};

@@ -44,6 +44,11 @@ SCRIPT_FUNCTION(to_card_image) {
   }
 }
 
+SCRIPT_FUNCTION(import_image) {
+  SCRIPT_PARAM(String, path);
+  return make_intrusive<ExternalImage>(path);
+}
+
 // ----------------------------------------------------------------------------- : Image functions
 
 SCRIPT_FUNCTION(width_of) {
@@ -261,4 +266,5 @@ void init_script_image_functions(Context& ctx) {
   ctx.setVariable(_("drop_shadow"),      script_drop_shadow);
   ctx.setVariable(_("symbol_variation"), script_symbol_variation);
   ctx.setVariable(_("built_in_image"),   script_built_in_image);
+  ctx.setVariable(_("import_image"),     script_import_image);
 }
