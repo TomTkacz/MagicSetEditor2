@@ -522,6 +522,10 @@ bool ImageValueToImage::operator == (const GeneratedImage& that) const {
 Image ExternalImage::generate(const Options& opt) const {
   wxFileName fname(filepath, wxPATH_UNIX);
 
+  // has a pre-existing .mse-set file been loaded? 
+  if (opt.local_package->needSaveAs())
+    throw ScriptError(_("Cannot import an image without first saving/loading a set file."));
+
   // does the file pointed to by filepath exist?
   if (!fname.FileExists()) {
     String filePathString = fname.GetAbsolutePath().ToStdString();
@@ -542,19 +546,19 @@ Image ExternalImage::generate(const Options& opt) const {
   if (!opt.local_package->existsIn(fileNameNoExtension)) {
     auto outStream = opt.local_package->openOut(fileNameNoExtension);
     wxFileInputStream inStream = wxFileInputStream(filepath.ToStdString());
-    if (!inStream.IsOk()) throw ScriptError("Failed to create file stream.");
+    if (!inStream.IsOk()) throw ScriptError(_("Failed to create file stream."));
     outStream->Write(inStream);
-    if (!outStream->IsOk()) throw ScriptError("Failed to write image to set.");
+    if (!outStream->IsOk()) throw ScriptError(_("Failed to write image to set."));
     outStream->Close();
   }
 
   // save the package with the new image
-  opt.local_package->saveAs(opt.local_package->relativeFilename(), false, false);
+  opt.local_package->save(false);
 
   auto imageInputStream = opt.local_package->openIn(fileNameNoExtension);
   Image img(*imageInputStream.get(), bitmapType);
 
-  if (!img.IsOk()) throw ScriptError("The image could not be created.");
+  if (!img.IsOk()) throw ScriptError(_("The image could not be created."));
 
   return img;
 }

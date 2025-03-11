@@ -408,7 +408,7 @@ public:
     Image generate(const Options&) const override;
     bool operator == (const GeneratedImage& that) const override;
     inline String toString() { return filepath; }
-    inline String ExternalImage::toCode() const override { return "<image>"; }
+    inline String toCode() const override { return _("<image>"); }
 private:
     String filepath;
 };
