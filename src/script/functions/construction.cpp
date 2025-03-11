@@ -18,7 +18,6 @@
 #include <data/game.hpp>
 #include <data/card.hpp>
 #include <util/error.hpp>
-#include <util/io/package.hpp>
 
 // ----------------------------------------------------------------------------- : new_card
 
