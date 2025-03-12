@@ -47,8 +47,8 @@ SCRIPT_FUNCTION(to_card_image) {
 
 SCRIPT_FUNCTION(import_image) {
   SCRIPT_PARAM(Set*, set);
-  SCRIPT_PARAM(String, path);
-  auto extImg = make_intrusive<ExternalImage>(path);
+  SCRIPT_PARAM(String, input);
+  auto extImg = make_intrusive<ExternalImage>(input);
   if (cli.haveConsole()) // makes sure generate() is called, but only once, when using the CLI
     extImg->generate(GeneratedImage::Options(0, 0, set->stylesheet.get(), set));
   return extImg;
