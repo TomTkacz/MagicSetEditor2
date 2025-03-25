@@ -1,0 +1,12 @@
+{
+  "dependencies": [
+    "pkgconf",
+    "wxwidgets",
+    "boost-iterator",
+    "boost-logic",
+    "boost-pool",
+    "boost-regex",
+    "boost-smart-ptr",
+    "hunspell"
+  ]
+}
