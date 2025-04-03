@@ -54,7 +54,7 @@ template <> void GetDefaultMember::handle(const Version& v) {
 const Version app_version  = 10000 * MSE_VERSION_MAJOR + 100 * MSE_VERSION_MINOR + MSE_VERSION_PATCH;
 
 #if defined UNOFFICIAL_BUILD
-const Char* version_suffix = _(" (Unofficial)");
+const Char* version_suffix = _(" (EasyMSE build)");
 #elif defined UNICODE
 const Char* version_suffix = _("");
 #else
