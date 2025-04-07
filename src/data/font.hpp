@@ -49,8 +49,10 @@ public:
 
   Font();
 
-  /// Load fonts (.ttf) from the resource/fonts directory
-  static bool PreloadResourceFonts();   
+  /// Load fonts (.ttf or .otf) from the given directory and its subdirectories, returns true if there were errors
+  static bool PreloadResourceFonts(String fontsDirectoryPath, bool recursive);
+  /// Adds font file paths from the given directory into fontFilePaths, returns true if fonts were found
+  static bool TallyResourceFonts(String fontsDirectoryPath, vector<String>& fontFilePaths, bool recursive);
   /// Update the scritables, returns true if there is a change
   bool update(Context& ctx);
   /// Add the given dependency to the dependent_scripts list for the variables this font depends on

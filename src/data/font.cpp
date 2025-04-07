@@ -27,32 +27,23 @@ Font::Font()
   , flags(FONT_NORMAL)
 {}
 
-bool Font::PreloadResourceFonts() {
-#if wxUSE_PRIVATE_FONTS  
-  wxUniChar pathSeparator = wxFileName::GetPathSeparator();
+bool Font::PreloadResourceFonts(String fontsDirectoryPath, bool recursive) {
+#if wxUSE_PRIVATE_FONTS
+  String pathSeparator(wxFileName::GetPathSeparator());
   String appPath( wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath() );
-  String fontsPath = appPath + pathSeparator + "resource" + pathSeparator + "fonts" + pathSeparator;
+  fontsDirectoryPath = appPath + pathSeparator + fontsDirectoryPath + (fontsDirectoryPath.EndsWith(pathSeparator) ? wxEmptyString : pathSeparator);
 
-  if (!wxDirExists(fontsPath))
-    return false;
+  if (!wxDirExists(fontsDirectoryPath)) return false;
   
-  wxDir fontsDirectory(fontsPath);
+  // tally fonts
   vector<String> fontFilePaths;
-  String fontFileName = "";
+  if (!TallyResourceFonts(fontsDirectoryPath, fontFilePaths, recursive)) return false;
 
-  // are there any font files in the resource/fonts directory?
-  if (!fontsDirectory.GetFirst(&fontFileName, "*.ttf"))
-    return false;
-
-  fontFilePaths.push_back(fontsPath + fontFileName);
-  while (fontsDirectory.GetNext(&fontFileName))
-    fontFilePaths.push_back(fontsPath + fontFileName);
-
+  // load fonts
   bool preloadHadErrors = false;
-  for (String fn : fontFilePaths) {
-    if (!wxFont::AddPrivateFont(fn)) {
+  for (String fontFilePath : fontFilePaths) {
+    if (!wxFont::AddPrivateFont(fontFilePath)) {
       preloadHadErrors = true;
-      continue;
     }
   }
 
@@ -60,6 +51,27 @@ bool Font::PreloadResourceFonts() {
 
 #endif // wxUSE_PRIVATE_FONTS
   return false;
+}
+
+bool Font::TallyResourceFonts(String fontsDirectoryPath, vector<String>& fontFilePaths, bool recursive) {
+  wxDir fontsDirectory(fontsDirectoryPath);
+  String fontFileName = "";
+  bool foundFonts = false;
+  bool hasNext = fontsDirectory.GetFirst(&fontFileName);
+  while (hasNext) {
+    String fontFilePath = fontsDirectoryPath + fontFileName;
+    if (wxDirExists(fontFilePath)) {
+      if (recursive) {
+        foundFonts = foundFonts || TallyResourceFonts(fontFilePath + wxFileName::GetPathSeparator(), fontFilePaths, true);
+      }
+    }
+    else if (fontFilePath.EndsWith(_(".ttf")) || fontFilePath.EndsWith(_(".otf"))) {
+      foundFonts = true;
+      fontFilePaths.push_back(fontFilePath);
+    }
+    hasNext = fontsDirectory.GetNext(&fontFileName);
+  }
+  return foundFonts;
 }
 
 bool Font::update(Context& ctx) {
