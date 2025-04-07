@@ -37,7 +37,8 @@ bool Font::PreloadResourceFonts(String fontsDirectoryPath, bool recursive) {
   
   // tally fonts
   vector<String> fontFilePaths;
-  if (!TallyResourceFonts(fontsDirectoryPath, fontFilePaths, recursive)) return false;
+  TallyResourceFonts(fontsDirectoryPath, fontFilePaths, recursive);
+  if (fontFilePaths.size() == 0) return false;
 
   // load fonts
   bool preloadHadErrors = false;
@@ -53,25 +54,22 @@ bool Font::PreloadResourceFonts(String fontsDirectoryPath, bool recursive) {
   return false;
 }
 
-bool Font::TallyResourceFonts(String fontsDirectoryPath, vector<String>& fontFilePaths, bool recursive) {
+void Font::TallyResourceFonts(String fontsDirectoryPath, vector<String>& fontFilePaths, bool recursive) {
   wxDir fontsDirectory(fontsDirectoryPath);
-  String fontFileName = "";
-  bool foundFonts = false;
+  String fontFileName = wxEmptyString;
   bool hasNext = fontsDirectory.GetFirst(&fontFileName);
   while (hasNext) {
     String fontFilePath = fontsDirectoryPath + fontFileName;
     if (wxDirExists(fontFilePath)) {
       if (recursive) {
-        foundFonts = foundFonts || TallyResourceFonts(fontFilePath + wxFileName::GetPathSeparator(), fontFilePaths, true);
+        TallyResourceFonts(fontFilePath + wxFileName::GetPathSeparator(), fontFilePaths, true);
       }
     }
     else if (fontFilePath.EndsWith(_(".ttf")) || fontFilePath.EndsWith(_(".otf"))) {
-      foundFonts = true;
       fontFilePaths.push_back(fontFilePath);
     }
     hasNext = fontsDirectory.GetNext(&fontFileName);
   }
-  return foundFonts;
 }
 
 bool Font::update(Context& ctx) {
