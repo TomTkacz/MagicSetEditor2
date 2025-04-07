@@ -21,7 +21,7 @@ On windows, the program can be compiled with Visual Studio (recommended) or with
 
 =======
 ````
-.\vcpkg install pkgconf wxwidgets boost-smart-ptr boost-regex boost-logic boost-pool boost-iterator hunspell --triplet=x64-windows-static
+.\vcpkg install pkgconf wxwidgets[fonts] boost-smart-ptr boost-regex boost-logic boost-pool boost-iterator hunspell --triplet=x64-windows-static
 ````
 and/or
 ````
