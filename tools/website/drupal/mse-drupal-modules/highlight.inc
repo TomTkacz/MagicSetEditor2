@@ -88,6 +88,7 @@ $built_in_functions = array(
 	'rotate'		=>'',
 	'drop_shadow'		=>'',
 	'symbol_variation'	=>'',
+	'import_image'	=>'',
 	'built_in_image'	=>'',
 	// cards
 	'new_card'		=>'',

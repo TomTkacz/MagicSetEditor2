@@ -1,0 +1,13 @@
+Function: import_image
+
+--Usage--
+> import_image(image_path)
+
+Load an image from outside the data folder. Intended for use from the CLI.
+
+--Parameters--
+! Parameter	Type			Description
+| @input@	[[type:string]]		Full path of the image to load
+
+--Examples--
+> import_image("D:/Art/Ajani.png")
