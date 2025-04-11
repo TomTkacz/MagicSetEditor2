@@ -521,34 +521,28 @@ bool ImageValueToImage::operator == (const GeneratedImage& that) const {
 
 Image ExternalImage::generate(const Options& opt) const {
   wxFileName fname(filepath, wxPATH_UNIX);
+  String filePathString = fname.GetAbsolutePath();
 
   // has a pre-existing .mse-set file been loaded? 
-  if (opt.local_package->needSaveAs())
-    throw ScriptError(_("Cannot import an image without first saving/loading a set file."));
+  if (opt.local_package->needSaveAs()) throw ScriptError(_ERROR_1_("can't import image without set", filePathString));
 
   // does the file pointed to by filepath exist?
-  if (!fname.FileExists()) {
-    String filePathString = fname.GetAbsolutePath().ToStdString();
-    throw ScriptError(format_string(_("The file '%s' was not found."),filePathString));
-  }
+  if (!fname.FileExists()) throw ScriptError(_ERROR_1_("import not found", filePathString));
 
   String fileExt = fname.GetExt();
   wxBitmapType bitmapType;
-  if (fileExt == _("png"))
-    bitmapType = wxBITMAP_TYPE_PNG;
-  else if (fileExt == _("jpg"))
-    bitmapType = wxBITMAP_TYPE_JPEG;
-  else
-    bitmapType = wxBITMAP_TYPE_BMP;
+  if      (fileExt == _("png"))                         bitmapType = wxBITMAP_TYPE_PNG;
+  else if (fileExt == _("jpg") || fileExt == _("jpeg")) bitmapType = wxBITMAP_TYPE_JPEG;
+  else                                                  bitmapType = wxBITMAP_TYPE_BMP;
 
   // does the file exist in the package?
   String fileNameNoExtension = fname.GetName();
   if (!opt.local_package->existsIn(fileNameNoExtension)) {
     auto outStream = opt.local_package->openOut(fileNameNoExtension);
     wxFileInputStream inStream = wxFileInputStream(filepath.ToStdString());
-    if (!inStream.IsOk()) throw ScriptError(_("Failed to create file stream."));
+    if (!inStream.IsOk()) throw ScriptError(_ERROR_1_("can't create file stream", filePathString));
     outStream->Write(inStream);
-    if (!outStream->IsOk()) throw ScriptError(_("Failed to write image to set."));
+    if (!outStream->IsOk()) throw ScriptError(_ERROR_1_("can't write image to set", filePathString));
     outStream->Close();
   }
 
@@ -558,7 +552,7 @@ Image ExternalImage::generate(const Options& opt) const {
   auto imageInputStream = opt.local_package->openIn(fileNameNoExtension);
   Image img(*imageInputStream.get(), bitmapType);
 
-  if (!img.IsOk()) throw ScriptError(_("The image could not be created."));
+  if (!img.IsOk()) throw ScriptError(_ERROR_1_("can't import image", filePathString));
 
   return img;
 }

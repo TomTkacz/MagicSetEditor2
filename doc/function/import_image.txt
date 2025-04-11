@@ -10,4 +10,4 @@ Load an image from outside the data folder. Intended for use from the CLI.
 | @input@	[[type:string]]		Full path of the image to load
 
 --Examples--
-> import_image("D:/Art/Ajani.png")
+> new_card([image: import_image("D:/Art/Ajani.png"), card_color: "green"])

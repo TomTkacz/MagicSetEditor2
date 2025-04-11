@@ -803,6 +803,13 @@ error:
 		To resolve this, add:
 		  depends on: %s %s
 
+	# Image import
+	import not found:					File not found: '%s'
+	can't import image without set:		Must first save or load a set file before importing file: '%s'
+	can't create file stream:			Failed to create file stream: '%s'
+	can't write image to set:			Failed to write image to set: '%s'
+	can't import image:					Failed to import image: '%s'
+
 	# Script stuff
 	has no member:						%s has no member '%s'
 	can't convert:						Can't convert from %s to %s
